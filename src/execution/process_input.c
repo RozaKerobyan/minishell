@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+#include "minishell.h"
+
 void	process_input(t_mini *shell, char *input)
 {
 	t_token	*tokens;

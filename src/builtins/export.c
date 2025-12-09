@@ -36,7 +36,7 @@ char	**export_update(char **env, char **args)
 			i++;
 			continue ;
 		}
-		if  (found > 0)
+		if (found > 0)
 		{
 			del = find_del_var(env, args, i, found);
 			(void)del;
@@ -46,10 +46,30 @@ char	**export_update(char **env, char **args)
 	return (env);
 }
 
-char	**export_builtin(char **env, char **args)
+void	handle_export_args(char **args, char ***env)
 {
 	int	i;
 
+	i = 1;
+	while (args[i])
+	{
+		if (!validation(args[i]))
+		{
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("`: not a valid identifier\n", 2);
+			set_exit_status(1);
+			i++;
+			continue ;
+		}
+		if (ft_strchr(args[i], '='))
+			*env = add_variable(*env, args[i]);
+		i++;
+	}
+}
+
+char	**export_builtin(char **env, char **args)
+{
 	set_exit_status(0);
 	if (!args[1])
 	{
@@ -57,20 +77,6 @@ char	**export_builtin(char **env, char **args)
 		return (env);
 	}
 	env = export_update(env, args);
-	i = 1;
-	while (args[i])
-	{
-		if (!validation(args[i]))
-		{
-			printf("minishell: export: `%s`: not a valid identifier\n",
-				args[i]);
-			set_exit_status(1);
-			i++;
-			continue ;
-		}
-		if (ft_strchr(args[i], '='))
-			env = add_variable(env, args[i]);
-		i++;
-	}
+	handle_export_args(args, &env);
 	return (env);
 }

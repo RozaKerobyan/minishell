@@ -57,7 +57,7 @@ int	cd_builtin(t_mini *shell, char **args)
 {
 	char	*pwd;
 	char	*oldpwd;
-	int	status;
+	int		status;
 
 	if (ft_strcmp(args[0], "cd"))
 		return (0);
@@ -68,8 +68,8 @@ int	cd_builtin(t_mini *shell, char **args)
 		pwd = getcwd(NULL, 0);
 		if (!pwd)
 		{
-			ft_putstr_fd("cd: error retrieving current directory: ", 2); //again think
-			ft_putstr_fd("cannot access parent directories\n", 2); //again think
+			ft_putstr_fd("cd: error retrieving current directory: ", 2);
+			ft_putstr_fd("cannot access parent directories\n", 2);
 			oldpwd_and_pwd(shell->env, &pwd, &oldpwd);
 		}
 		change_cd_env(shell, oldpwd, pwd);

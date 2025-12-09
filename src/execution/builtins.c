@@ -76,15 +76,11 @@ int	execute_builtins(t_mini *shell, char **args)
 
 int     file_exist(char *path)
 {
-        int     fd;
-
-        fd = open(path, O_RDONLY);
-        if (fd != -1)
-        {
-                close(fd);
-                return (1);
-        }
-        return (0);
+	if (!path)
+		return (0);
+	if (access(path, F_OK) == 0)
+		return (1);
+	return (0);
 }
 
 char    *find_cmd_path(char *cmd, t_env *env)

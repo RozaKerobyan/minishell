@@ -13,7 +13,7 @@ int	n_option(char *str)
 	return (str[i] == '\0');
 }
 
-void echo_output(char **args, bool flag, int i)
+void	echo_output(char **args, bool flag, int i)
 {
 	if (!args[i])
 	{
@@ -30,18 +30,16 @@ void echo_output(char **args, bool flag, int i)
 	}
 	if (!flag)
 		printf("\n");
-
 }
 
 int	echo_builtin(char **args)
 {
-	int	i;
+	int		i;
 	bool	flag;
 
-	//(void)data;
 	flag = false;
 	i = 1;
-	while(args[i] && n_option(args[i]))
+	while (args[i] && n_option(args[i]))
 	{
 		flag = true;
 		i++;

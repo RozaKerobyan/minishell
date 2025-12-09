@@ -1,18 +1,10 @@
 #include "minishell.h"
 
-/*
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "../../libft/libft.h"
-#include <string.h>
-*/
-
 int	pwd_builtin(t_mini *shell, char **args)
 {
 	char	*directory;
 
-	if (args && ft_strcmp(args[0], "pwd") == 0) // libt function add
+	if (args && ft_strcmp(args[0], "pwd") == 0)
 	{
 		directory = getcwd(NULL, 0);
 		if (directory)
@@ -27,14 +19,3 @@ int	pwd_builtin(t_mini *shell, char **args)
 	}
 	return (1);
 }
-
-/*
-int main(int argc, char **argv)
-{
-    if (argc > 1 && strcmp(argv[1], "pwd") == 0)
-        pwd_builtin(&argv[1]);
-    else
-        return (0);
-    return 0;
-}
-*/

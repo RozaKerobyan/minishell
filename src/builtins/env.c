@@ -2,7 +2,7 @@
 
 int	env_builtin(t_mini *shell)
 {
-	t_env	*current;;
+	t_env	*current;
 
 	if (!shell || !shell->env)
 		return (1);

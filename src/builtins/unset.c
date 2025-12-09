@@ -23,7 +23,7 @@ char	**unset_builtin(char **env, char **args)
 {
 	int	i;
 
-	set_exit_status(0);  
+	set_exit_status(0);
 	if (!args[1])
 		return (env);
 	i = 1;
@@ -31,7 +31,9 @@ char	**unset_builtin(char **env, char **args)
 	{
 		if (!validation(args[i]))
 		{
-			printf("unset: %s: invalid parameter name\n", args[i]);
+			ft_putstr_fd("unset: ", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd(": invalid parameter name\n", 2);
 			set_exit_status(1);
 			i++;
 			continue ;

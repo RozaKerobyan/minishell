@@ -2,7 +2,7 @@
 
 void	free_env(t_env *env)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	while (env)
 	{
@@ -48,21 +48,20 @@ void	free_cmds(t_cmd *cmd)
 	}
 }
 
-void    free_shell_history(t_mini *shell)
+void	free_shell_history(t_mini *shell)
 {
-    int i;
+	int	i;
 
-    if (!shell || !shell->history)
-        return ;
-    i = 0;
-    while (i < shell->history_count)
-    {
-        free(shell->history[i]);
-        i++;
-    }
-    free(shell->history);
-    shell->history = NULL;
-    shell->history_count = 0;
-    shell->history_capacity = 0;
+	if (!shell || !shell->history)
+		return ;
+	i = 0;
+	while (i < shell->history_count)
+	{
+		free(shell->history[i]);
+		i++;
+	}
+	free(shell->history);
+	shell->history = NULL;
+	shell->history_count = 0;
+	shell->history_capacity = 0;
 }
-

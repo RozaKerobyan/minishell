@@ -13,6 +13,7 @@ SRC = \
 	builtins/echo.c \
 	builtins/env.c \
 	builtins/exit.c \
+	builtins/exit_utils.c \
 	builtins/export.c \
 	builtins/export_utils.c \
 	builtins/pwd.c \
@@ -40,6 +41,7 @@ SRC = \
 	parser/parsing.c \
 	parser/pars_utils.c \
 	redirections/redirections.c \
+	redirections/redirections_utils.c \
 	signals/signals.c \
 	signals/signals_utils.c \
 	utils/args_utils.c \
@@ -50,6 +52,7 @@ SRC = \
 	utils/ft_itoa_long.c \
 	utils/ft_strcmp.c \
 	utils/ft_isspace.c \
+	utils/ft_strjoin_free.c \
 	utils/utils.c
 
 OBJS = $(addprefix $(OBJ_DIR), $(SRC:.c=.o))

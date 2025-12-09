@@ -125,6 +125,9 @@ char    **remove_var(char **env, char *var);
 int     equal_sign(char *str, int *found);
 char    **export_remove(char **env, char **args, int i, int found);
 
+/* exit_utils.c */
+int     status_exit(char *arg, int *err_status);
+
 // execution
 int     builtins(char *cmd);
 int     execute_builtins(t_mini *shell, char **args);

@@ -80,7 +80,8 @@ t_token	*tokenize_line(char *line)
 	if (status != DEFAULT)
 	{
 		free_tokens(tokens);
-		printf("minishell: unexpected EOF while looking for matching '\"'\n");
+		ft_putstr_fd("minishell: unexpected EOF while looking for matching '\"'\n", STDERR_FILENO);
+		set_exit_status(2);
 		return (NULL);
 	}
 	t_token *tmp = tokens;
