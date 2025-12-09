@@ -18,56 +18,34 @@ int	setup_child_redir(t_mini *shell, t_cmd *all, t_cmd *curr)
 	return (1);
 }
 
-void	child_cmd(t_mini *shell, t_cmd *curr)
+void    child_cmd(t_mini *shell, t_cmd *curr)
 {
-	char	*cmd_path;
-	int	dfd;
+    char    *cmd_path;
 
-	if (builtins(curr->args[0]))
-		exit(execute_builtins(shell, curr->args));
-	cmd_path = find_cmd_path(curr->args[0], shell->env);
-	if (!cmd_path)
-	{
-		write(2, "minishell: ", 11);
-		write(2, curr->args[0], ft_strlen(curr->args[0]));
-		write(2, ": command not found\n", 20);
-		exit(127);
-	}
-	errno = 0;
-	dfd = open(cmd_path, O_RDONLY | O_DIRECTORY);
-	if (dfd != -1)
-	{
-		close(dfd);
-		write(2, "minishell: ", 11);
-		write(2, curr->args[0], ft_strlen(curr->args[0]));
-		write(2, ": Is a directory\n", 18);
-		free(cmd_path);
-		exit(126);
-	}
-	else
-	{
-		if (errno == EACCES)
-		{
-			write(2, "minishell: ", 11);
-			write(2, curr->args[0], ft_strlen(curr->args[0]));
-			write(2, ": Permission denied\n", 20);
-			free(cmd_path);
-			exit(126);
-		}
-		if (access(cmd_path, X_OK) != 0)
-		{
-			write(2, "minishell: ", 11);
-			write(2, curr->args[0], ft_strlen(curr->args[0]));
-			write(2, ": Permission denied\n", 20);
-			free(cmd_path);
-			exit(126);
-		}
-	}
-	execve(cmd_path, curr->args, shell->env_arr);
-	perror("minishell");
-	free(cmd_path);
-	exit(127);
+    if (builtins(curr->args[0]))
+        exit(execute_builtins(shell, curr->args));
+    cmd_path = find_cmd_path(curr->args[0], shell->env);
+    if (!cmd_path)
+    {
+        write(2, "minishell: ", 11);
+        write(2, curr->args[0], ft_strlen(curr->args[0]));
+        write(2, ": command not found\n", 20);
+        exit(127);
+    }
+    if (access(cmd_path, X_OK) != 0)
+    {
+        write(2, "minishell: ", 11);
+        write(2, curr->args[0], ft_strlen(curr->args[0]));
+        write(2, ": Permission denied\n", 20);
+        free(cmd_path);
+        exit(126);
+    }
+    execve(cmd_path, curr->args, shell->env_arr);
+    perror("minishell");
+    free(cmd_path);
+    exit(127);
 }
+
 
 void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 {

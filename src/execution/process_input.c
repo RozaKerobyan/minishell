@@ -1,6 +1,54 @@
 #include "minishell.h"
 
-#include "minishell.h"
+void	del_empty_args_cmd(t_cmd *cmd)
+{
+	t_cmd	*curr;
+	int		i;
+	int		j;
+	int		keep;
+	char	**new;
+
+	curr = cmd;
+	while (curr)
+	{
+		if (curr->args)
+		{
+			i = 0;
+			keep = 0;
+			while (curr->args[i])
+			{
+				if (curr->args[i][0] != '\0')
+					keep++;
+				i++;
+			}
+			if (keep == 0)
+			{
+				free_old_args(curr->args);
+				curr->args = NULL;
+			}
+			else if (keep < i)
+			{
+				new = malloc(sizeof(char *) * (keep + 1));
+				if (!new)
+					continue;
+				j = 0;
+				i = 0;
+				while (curr->args[i])
+				{
+					if (curr->args[i][0] != '\0')
+						new[j++] = curr->args[i];
+					else
+						free(curr->args[i]);
+					i++;
+				}
+				new[j] = NULL;
+				free(curr->args);
+				curr->args = new;
+			}
+		}
+		curr = curr->next;
+	}
+}
 
 void	process_input(t_mini *shell, char *input)
 {
@@ -26,9 +74,11 @@ void	process_input(t_mini *shell, char *input)
 	}
 	shell->cmd = cmd;
 	execute_expander(cmd, shell->env_arr, shell->status, shell);
+	del_empty_args_cmd(cmd);
 	if (cmd->next)
 		shell->status = execute_pipeline(shell, cmd);
 	else
 		shell->status = execute_cmd(shell, cmd, cmd);
+	free_cmds(cmd);
 	shell->cmd = NULL;
 }

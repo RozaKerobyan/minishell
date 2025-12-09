@@ -17,7 +17,7 @@ char	*rm_quotes(char *s)
 	char		*res;
 	t_expander	e;
 
-	res = malloc(strlen(s) + 1);
+	res = malloc(ft_strlen(s) + 1);
 	if (!res)
 		return (NULL);
 	e.i = 0;
@@ -28,7 +28,7 @@ char	*rm_quotes(char *s)
 	{
 		if ((s[e.i] == '\'' || s[e.i] == '\"') && !e.q)
 		{
-			if (strchr(&s[e.i + 1], s[e.i]) != NULL)
+			if (ft_strchr(&s[e.i + 1], s[e.i]) != NULL)
 				e.q = s[e.i++];
    			else
 				res[e.j++] = s[e.i++];
@@ -104,6 +104,7 @@ char	**expand_args(char **args, char **env, int code)
 	int		i;
 	char	**new;
 	char	*tmp;
+	char	*quoted;
 
 	count = 0;
 	while (args && args[count])
@@ -115,8 +116,16 @@ char	**expand_args(char **args, char **env, int code)
 	while (i < count)
 	{
 		tmp = expand_arg(args[i], env, code);
-		new[i] = rm_quotes(tmp);
+		quoted = rm_quotes(tmp);
 		free(tmp);
+		if (!quoted)
+		{
+			while (--i >= 0)
+				free(new[i]);
+			free(new);
+			return (NULL);
+		}
+		new[i] = quoted;
 		i++;
 	}
 	new[count] = NULL;

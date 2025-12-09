@@ -11,6 +11,9 @@ void	init_minishell(t_mini *shell, char **env)
 	shell->status = 0;
 	shell->cmd = NULL;
 	shell->pid = -1;
+	shell->history = NULL;        
+	shell->history_count = 0;   
+	shell->history_capacity = 0; 
 	init_shlvl(shell);
 	setup_signals();
 }

@@ -46,8 +46,13 @@ void	add_arg(t_cmd *cmd, const char *value)
 		while (cmd->args[n])
 			n++;
 	new_args = malloc(sizeof(char *) * (n + 2));
-	if (!new_args)
+	if (!new_args) // added for clean
+	{
+		while (--n >= 0)
+			free(new_args[n]);
+		free(new_args);
 		return ;
+	}
 	while (i < n)
 	{
 		new_args[i] = cmd->args[i];

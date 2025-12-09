@@ -58,5 +58,6 @@ void	cleanup_minishell(t_mini *shell)
 	if (shell->cmd)
 		free_cmds(shell->cmd);
 	cleanup_redir(shell);
+	free_shell_history(shell);
 	free(shell);
 }

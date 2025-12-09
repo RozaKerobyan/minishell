@@ -8,7 +8,7 @@ void	declare_x(char	**env)
 	if (!sorted_env)
 		return ;
 	print_sorted_env(sorted_env);
-	tab_free(sorted_env);
+	free_str(sorted_env);
 }
 
 char	**export_remove(char **env, char **args, int i, int found)

@@ -36,13 +36,19 @@ void	free_cmds(t_cmd *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
-		free_args(cmd->args);
+		free_old_args(cmd->args);
 		if (cmd->infile)
 			free(cmd->infile);
 		if (cmd->outfile)
 			free(cmd->outfile);
 		if (cmd->heredoc_limiter)
 			free(cmd->heredoc_limiter);
+		if (cmd->pipe_fd)
+		{
+			close(cmd->pipe_fd[0]);
+			close(cmd->pipe_fd[1]);
+			free(cmd->pipe_fd);
+		}
 		free(cmd);
 		cmd = next;
 	}

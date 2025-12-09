@@ -80,4 +80,12 @@ fclean: clean
 
 re: fclean all
 
+valgrind:
+	valgrind --track-origins=yes \
+         --leak-check=full \
+         --show-leak-kinds=all \
+         --track-fds=yes \
+         --suppressions=readline.supp \
+         ./minishell	
+
 .PHONY: all clean fclean re
