@@ -27,14 +27,14 @@ void    child_cmd(t_mini *shell, t_cmd *curr)
     cmd_path = find_cmd_path(curr->args[0], shell->env);
     if (!cmd_path)
     {
-        write(2, "minishell: ", 11);
+        //write(2, "minishell: ", 11);
         write(2, curr->args[0], ft_strlen(curr->args[0]));
         write(2, ": command not found\n", 20);
         exit(127);
     }
     if (access(cmd_path, X_OK) != 0)
     {
-        write(2, "minishell: ", 11);
+        //write(2, "minishell: ", 11);
         write(2, curr->args[0], ft_strlen(curr->args[0]));
         write(2, ": Permission denied\n", 20);
         free(cmd_path);
@@ -79,8 +79,12 @@ int execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
 		child_process(shell, all, curr);
 	}
 	curr->pid = pid;
-	setup_signals();
 	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		write(1, "\n", 1);
+	}
+	setup_signals();
 	free(cmd_path);
 	return (process_status(status));
 }

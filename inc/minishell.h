@@ -103,9 +103,8 @@ int     echo_builtin(char **args);
 int     pwd_builtin(t_mini *shell, char **args);
 char    **export_builtin(char **env, char **args);
 int     env_builtin(t_mini *shell);
-char    **unset_builtin(char **env, char **args);
+void	unset_builtin(t_mini *shell, char **args);
 int     cd_builtin(t_mini *shell, char **args);
-int     exit_builtin(t_mini *shell, char **args);
 int     exit_builtin(t_mini *shell, char **args);
 int	history_builtin(t_mini *shell, char **args);
 

@@ -21,13 +21,13 @@ int	syntax_error(const char *msg, const char *token)
 {
 	if (token)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
 		ft_putstr_fd((char *)token, STDERR_FILENO);
 		ft_putstr_fd("'\n", STDERR_FILENO);
 	}
 	else
 	{
-		ft_putstr_fd("minishell: syntax error: ", STDERR_FILENO);
+		ft_putstr_fd("syntax error: ", STDERR_FILENO);
 		ft_putstr_fd((char *)msg, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 	}

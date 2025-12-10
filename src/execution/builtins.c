@@ -47,7 +47,7 @@ int	execute_builtins(t_mini *shell, char **args)
 		status = cd_builtin(shell, args);
 	else if (ft_strcmp(args[0], "unset") == 0)
 	{
-		shell->env_arr = unset_builtin(shell->env_arr, args);
+		unset_builtin(shell, args);
 		status = get_exit_status();
 	}
 	else if (ft_strcmp(args[0], "exit") == 0)
@@ -57,6 +57,7 @@ int	execute_builtins(t_mini *shell, char **args)
 	else if (ft_strcmp(args[0], "export") == 0)
 	{
 		shell->env_arr = export_builtin(shell->env_arr, args);
+		shell->env = env_list_from_array(shell->env_arr);
 		status = get_exit_status();
 	}
 	else if (ft_strcmp(args[0], "history") == 0)

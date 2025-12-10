@@ -36,8 +36,6 @@ int	main_loop(t_mini *shell)
 			process_input(shell, line);
 		}
 		free(line);
-        	if (g_status == SIGINT)
-        		g_status = 0;
 	}
 	return (0);
 }
@@ -46,7 +44,11 @@ int	main(int argc, char **argv, char **env)
 {
 	t_mini *shell;
 
-	(void)argc;
+	if (argc != 1)
+	{
+		ft_putstr_fd("no arguments allowed\n", 2);
+		return (1);
+	}
 	(void)argv;
 
 	shell = malloc(sizeof(t_mini));

@@ -73,8 +73,10 @@ void	process_input(t_mini *shell, char *input)
 		return ;
 	}
 	shell->cmd = cmd;
-	execute_expander(cmd, shell->env_arr, shell->status, shell);
+	execute_expander(cmd, shell->env_arr, g_status, shell);
 	del_empty_args_cmd(cmd);
+	if (g_status == 130)
+		g_status = 0;
 	if (cmd->next)
 		shell->status = execute_pipeline(shell, cmd);
 	else

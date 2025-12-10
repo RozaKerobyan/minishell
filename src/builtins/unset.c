@@ -19,17 +19,46 @@ int	validation_unset(char *str)
 	return (0);
 }
 
-char	**unset_builtin(char **env, char **args)
+t_env	*remove_env_var(t_env *env, char *var)
+{
+	t_env	*prev;
+	t_env	*curr;
+
+	if (!env || !var)
+		return (env);
+	curr = env;
+	prev = NULL;
+	while (curr)
+	{
+		if (ft_strcmp(curr->key, var) == 0)
+		{
+			if (prev)
+				prev->next = curr->next;
+			else
+				env = curr->next;
+
+			free(curr->key);
+			free(curr->value);
+			free(curr);
+			return (env);
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+	return (env);
+}
+
+void	unset_builtin(t_mini *shell, char **args)
 {
 	int	i;
 
 	set_exit_status(0);
 	if (!args[1])
-		return (env);
+		return;
 	i = 1;
 	while (args[i])
 	{
-		if (!validation(args[i]))
+		if (!validation_unset(args[i]))
 		{
 			ft_putstr_fd("unset: ", 2);
 			ft_putstr_fd(args[i], 2);
@@ -38,8 +67,8 @@ char	**unset_builtin(char **env, char **args)
 			i++;
 			continue ;
 		}
-		env = remove_var(env, args[i]);
+		shell->env = remove_env_var(shell->env, args[i]);
+		shell->env_arr = remove_var(shell->env_arr, args[i]);
 		i++;
 	}
-	return (env);
 }

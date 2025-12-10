@@ -37,7 +37,11 @@ int	wait_pipeline(t_cmd *cmd)
 			if (WIFEXITED(status))
 				last = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
+			{
 				last = 128 + WTERMSIG(status);
+				/* print newline if child was terminated by a signal (Ctrl+C/Ctrl+\) */
+				write(1, "\n", 1);
+			}
 		}
 		cmd = cmd->next;
 	}
@@ -49,8 +53,29 @@ int	execute_pipeline(t_mini *shell, t_cmd *cmd)
 {
 	t_cmd *c;
 	pid_t pid;
-	
-	if (!cmd || !create_pipes(cmd))
+	int   ret;
+	if (!cmd)
+		return (1);
+	c = cmd;
+	while (c)
+	{
+		if (c->outfile)
+		{
+			int fd;
+			if (c->append)
+				fd = open(c->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else
+				fd = open(c->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd < 0)
+			{
+				perror(c->outfile);
+				return (1);
+			}
+			close(fd);
+		}
+		c = c->next;
+	}
+	if (!create_pipes(cmd))
 		return (1);
 	c = cmd;
 	while (c)
@@ -69,11 +94,12 @@ int	execute_pipeline(t_mini *shell, t_cmd *cmd)
 			setup_signals_child();
 			child_process(shell, cmd, c);
 		}
-		setup_signals();
 		c->pid = pid;
 		close_prev_pipe(c);
 		c = c->next;
 	}
 	free_pipe_fd(cmd);
-	return (wait_pipeline(cmd));
+	ret = wait_pipeline(cmd);
+	setup_signals();
+	return (ret);
 }

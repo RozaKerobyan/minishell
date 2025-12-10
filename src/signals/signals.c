@@ -2,7 +2,8 @@
 
 void	sigint_handler(int sig)
 {
-	g_status = sig;
+	(void)sig;
+	g_status = 130;
 	rl_replace_line("", 0);
 	write(1, "\n", 1);
 	rl_on_new_line();

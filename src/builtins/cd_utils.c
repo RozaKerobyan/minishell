@@ -30,7 +30,7 @@ int	check_home(t_mini *shell, char **args)
 
 	home = check_env_value(shell, "HOME");
 	if (!home && !args[1])
-		return (msg_error(shell->env, "minishell$ cd: HOME not set", NULL, 1));
+		return (msg_error(shell->env, "cd: HOME not set", "", 1));
 	return (0);
 }
 
@@ -40,7 +40,7 @@ int	chdir_error(t_mini *shell, char *home, char *go)
 
 	error = strerror(errno);
 	free_two(home, go);
-	return (msg_error(shell->env, "minishell$ ", error, 1));
+	return (msg_error(shell->env, "cd: ", error, 1));
 }
 
 char	*cd_display(char *str)
@@ -67,13 +67,13 @@ int	cd_change(t_mini *shell, char **args)
 
 	if (args[1] && args[2])
 		return (msg_error(shell->env,
-				"minishell$ cd: too many arguments", "", 1));
+			"cd: too many arguments", "", 1));
 	if (check_home(shell, args))
 		return (1);
 	home = home_path(shell);
 	if (!home)
 		return (msg_error(shell->env,
-				"minishell$ cd: cannot resolve HOME", NULL, 1));
+			"cd: cannot resolve HOME", NULL, 1));
 	if (!args[1])
 		go = ft_strdup(home);
 	else if (!ft_strcmp(args[1], "-"))
@@ -82,7 +82,7 @@ int	cd_change(t_mini *shell, char **args)
 		go = ft_strdup(args[1]);
 	if (!go)
 		return (free(home), msg_error(shell->env,
-				"minishell$ cd: alloc error", NULL, 1));
+			"cd: alloc error", NULL, 1));
 	if (chdir(go) == -1)
 		return (chdir_error(shell, home, go));
 	free_two(home, go);

@@ -16,7 +16,7 @@ int	heredoc(t_mini *shell, char *limit)
 	result = heredoc_write(fd, limit, len);
 	setup_signals();
 	close(fd);
-	if (result == -1 || g_status == SIGINT)
+	if (result == -1 || g_status == 130)
 	{
 		g_status = 0;
 		unlink(".heredoc_tmp");

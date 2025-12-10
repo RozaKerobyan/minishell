@@ -5,7 +5,7 @@ int	heredoc_line(int fd, char *limit, size_t len)
 	char    *line;
 
 	line = readline("> ");
-	if (!line || g_status == SIGINT)
+	if (!line || g_status == 130)
 	{
 		if (line)
             		free(line);
@@ -60,7 +60,7 @@ int     heredoc_read(t_mini *shell)
 
 int     heredoc_check_exit(void)
 {
-	if (g_status == SIGINT)
+	if (g_status == 130)
 	{
 				g_status = 0;
 				set_exit_status(1);

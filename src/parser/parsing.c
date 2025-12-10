@@ -93,33 +93,74 @@ t_cmd	*parse_tokens(t_token *tok)
 	return (head);
 }
 
+char	*remove_quotes_str(const char *str)
+{
+	int		i;
+	int		j;
+	char	*result;
+	char	quote;
+
+	if (!str)
+		return (NULL);
+
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
+	quote = 0;
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '"') && quote == 0)
+			quote = str[i];
+		else if (str[i] == quote)
+			quote = 0;
+		else
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	return (result);
+}
+
 void	handle_redir(t_cmd *cur, t_token **tok)
 {
 	t_token	*redir_token;
 	char	*filename;
+	char	*unquoted;
 
 	if (!(*tok) || !(*tok)->next)
 		return ;
+
 	redir_token = *tok;
 	filename = (*tok)->next->value;
+	unquoted = remove_quotes_str(filename);
+	if (!unquoted)
+		unquoted = filename;
 	*tok = (*tok)->next;
 	if (redir_token->type == INPUT)
 	{
-		cur->infile = ft_strdup(filename);
+		free(cur->infile); 
+		cur->infile = ft_strdup(unquoted);
 	}
 	else if (redir_token->type == TRUNC)
 	{
+		free(cur->outfile);  
 		cur->append = 0;
-		cur->outfile = ft_strdup(filename);
+		cur->outfile = ft_strdup(unquoted);
 	}
 	else if (redir_token->type == APPEND)
 	{
+		free(cur->outfile); 
 		cur->append = 1;
-		cur->outfile = ft_strdup(filename);
+		cur->outfile = ft_strdup(unquoted);
 	}
 	else if (redir_token->type == HEREDOC)
 	{
+		free(cur->heredoc_limiter); 
 		cur->is_heredoc = 1;
-		cur->heredoc_limiter = ft_strdup(filename);
+		cur->heredoc_limiter = ft_strdup(unquoted);
 	}
+	if (unquoted != filename)
+		free(unquoted);
 }

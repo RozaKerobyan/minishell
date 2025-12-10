@@ -11,7 +11,7 @@ int	msg_error(t_env *env, char *msg, char *str, int status)
 
 int	cmd_error(char	*cmd)
 {
-	write(2, "minishell$ ", 11);
+	//write(2, "minishell$ ", 11);
 	write(2, cmd, ft_strlen(cmd));
 	write(2, ": command not found\n", 20);
 	return (127);

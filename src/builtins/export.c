@@ -64,6 +64,8 @@ void	handle_export_args(char **args, char ***env)
 		}
 		if (ft_strchr(args[i], '='))
 			*env = add_variable(*env, args[i]);
+		else
+			*env = add_variable(*env, ft_strjoin(args[i], "="));
 		i++;
 	}
 }
