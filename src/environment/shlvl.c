@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shlvl.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:24:40 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:24:42 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	get_shlvl(t_mini *shell)
 {
 	char	*lvl_str;
-	int	lvl;
+	int		lvl;
 
 	lvl_str = check_env_value(shell, "SHLVL");
 	if (!lvl_str)
@@ -18,7 +30,7 @@ void	update_shlvl(t_mini *shell)
 {
 	char	*lvl_str;
 	char	*new_lvl;
-	int	cur_lvl;
+	int		cur_lvl;
 
 	lvl_str = check_env_value(shell, "SHLVL");
 	if (!lvl_str)

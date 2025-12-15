@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:24:13 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:24:14 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	validation_unset(char *str)
@@ -36,7 +48,6 @@ t_env	*remove_env_var(t_env *env, char *var)
 				prev->next = curr->next;
 			else
 				env = curr->next;
-
 			free(curr->key);
 			free(curr->value);
 			free(curr);
@@ -54,7 +65,7 @@ void	unset_builtin(t_mini *shell, char **args)
 
 	set_exit_status(0);
 	if (!args[1])
-		return;
+		return ;
 	i = 1;
 	while (args[i])
 	{

@@ -69,7 +69,7 @@ int	save_separator(t_token **tokens, char *str, int i, t_type type)
 	if (type == APPEND || type == HEREDOC)
 		len = 2;
 	else
-		len = 1;	
+		len = 1;
 	sep = malloc(len + 1);
 	if (!sep)
 		return (1);
@@ -78,7 +78,7 @@ int	save_separator(t_token **tokens, char *str, int i, t_type type)
 		sep[j] = str[i + j];
 		j++;
 	}
-	sep[len] = '\0';	
+	sep[len] = '\0';
 	token_add_back(tokens, token_new(sep, type));
 	return (0);
 }

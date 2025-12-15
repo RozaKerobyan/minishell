@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:24:30 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:24:32 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_env	*create_env_child(char	*env)
@@ -27,12 +39,11 @@ t_env	*create_env_child(char	*env)
 
 t_env	*env_list_from_array(char **env)
 {
-	int	i;
+	int		i;
 	t_env	*list;
 	t_env	*new;
 	t_env	*last;
 
-	
 	i = 0;
 	list = NULL;
 	while (env && env[i])
@@ -76,8 +87,8 @@ char	**env_array_from_list(t_env *env)
 {
 	t_env	*tmp;
 	char	**arr;
-	int	count;
-	int	i;
+	int		count;
+	int		i;
 
 	tmp = env;
 	count = 0;
@@ -103,7 +114,7 @@ char	**env_array_from_list(t_env *env)
 
 char	*get_env(t_env *env, char *key)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	tmp = env;
 	while (tmp)

@@ -12,43 +12,31 @@
 
 #include "minishell.h"
 
-char	*rm_quotes(char *s)
+static void	handle_expand_char(t_expander *e, char **env, int code, char *arg)
 {
-	char		*res;
-	t_expander	e;
+	char	c;
 
-	res = malloc(ft_strlen(s) + 1);
-	if (!res)
-		return (NULL);
-	e.i = 0;
-	e.j = 0;
-	e.q = 0;
-	e.res = res;
-	while (s[e.i])
+	c = arg[e->i];
+	if ((c == '\'' || c == '\"') && !e->q)
 	{
-		if ((s[e.i] == '\'' || s[e.i] == '\"') && !e.q)
-		{
-			if (ft_strchr(&s[e.i + 1], s[e.i]) != NULL)
-				e.q = s[e.i++];
-   			else
-				res[e.j++] = s[e.i++];
-		}
-		else if (s[e.i] == e.q)
-		{
-			e.q = 0;
-			e.i++;
-		}
-		else
-			res[e.j++] = s[e.i++];
+		e->q = c;
+		e->i++;
 	}
-	res[e.j] = '\0';
-	return (res);
+	else if (c == e->q)
+	{
+		e->q = 0;
+		e->i++;
+	}
+	else if (c == '$' && e->q != '\'')
+		expand_dollar(arg, env, code, e);
+	else
+		e->res[e->j++] = arg[e->i++];
 }
 
 char	*expand_arg(char *arg, char **env, int code)
 {
-	char		*res;
 	t_expander	e;
+	char		*res;
 
 	res = malloc(4096);
 	if (!res)
@@ -57,25 +45,11 @@ char	*expand_arg(char *arg, char **env, int code)
 	e.j = 0;
 	e.q = 0;
 	e.res = res;
-
 	while (arg[e.i])
-	{
-		if ((arg[e.i] == '\'' || arg[e.i] == '\"') && !e.q)
-			e.q = arg[e.i++];
-		else if (arg[e.i] == e.q)
-		{
-			e.q = 0;
-			e.i++;
-		}
-		else if (arg[e.i] == '$' && e.q != '\'')
-			expand_dollar(arg, env, code, &e);
-		else
-			res[e.j++] = arg[e.i++];
-	}
+		handle_expand_char(&e, env, code, arg);
 	res[e.j] = '\0';
 	return (res);
 }
-
 
 void	expand_dollar(char *arg, char **env, int code, t_expander *e)
 {
@@ -104,7 +78,6 @@ char	**expand_args(char **args, char **env, int code)
 	int		i;
 	char	**new;
 	char	*tmp;
-	char	*quoted;
 
 	count = 0;
 	while (args && args[count])
@@ -115,35 +88,15 @@ char	**expand_args(char **args, char **env, int code)
 	i = 0;
 	while (i < count)
 	{
-		tmp = expand_arg(args[i], env, code);
-		quoted = rm_quotes(tmp);
-		free(tmp);
-		if (!quoted)
+		tmp = process_arg(args[i], env, code);
+		if (!tmp)
 		{
-			while (--i >= 0)
-				free(new[i]);
-			free(new);
+			free_args_array(new, i);
 			return (NULL);
 		}
-		new[i] = quoted;
+		new[i] = tmp;
 		i++;
 	}
 	new[count] = NULL;
 	return (new);
-}
-
-int	free_old_args(char **args)
-{
-	int	i;
-
-	if (!args)
-		return (0);
-	i = 0;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-	return (0);
 }

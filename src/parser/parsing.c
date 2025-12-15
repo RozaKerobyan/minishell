@@ -34,6 +34,15 @@ t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
+void	free_args_array(char **args, int n)
+{
+	if (!args || n <= 0)
+		return ;
+	while (--n >= 0)
+		free(args[n]);
+	free(args);
+}
+
 void	add_arg(t_cmd *cmd, const char *value)
 {
 	int		n;
@@ -46,11 +55,9 @@ void	add_arg(t_cmd *cmd, const char *value)
 		while (cmd->args[n])
 			n++;
 	new_args = malloc(sizeof(char *) * (n + 2));
-	if (!new_args) // added for clean
+	if (!new_args)
 	{
-		while (--n >= 0)
-			free(new_args[n]);
-		free(new_args);
+		free_args_array(cmd->args, n);
 		return ;
 	}
 	while (i < n)
@@ -102,7 +109,6 @@ char	*remove_quotes_str(const char *str)
 
 	if (!str)
 		return (NULL);
-
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
 		return (NULL);
@@ -121,46 +127,4 @@ char	*remove_quotes_str(const char *str)
 	}
 	result[j] = '\0';
 	return (result);
-}
-
-void	handle_redir(t_cmd *cur, t_token **tok)
-{
-	t_token	*redir_token;
-	char	*filename;
-	char	*unquoted;
-
-	if (!(*tok) || !(*tok)->next)
-		return ;
-
-	redir_token = *tok;
-	filename = (*tok)->next->value;
-	unquoted = remove_quotes_str(filename);
-	if (!unquoted)
-		unquoted = filename;
-	*tok = (*tok)->next;
-	if (redir_token->type == INPUT)
-	{
-		free(cur->infile); 
-		cur->infile = ft_strdup(unquoted);
-	}
-	else if (redir_token->type == TRUNC)
-	{
-		free(cur->outfile);  
-		cur->append = 0;
-		cur->outfile = ft_strdup(unquoted);
-	}
-	else if (redir_token->type == APPEND)
-	{
-		free(cur->outfile); 
-		cur->append = 1;
-		cur->outfile = ft_strdup(unquoted);
-	}
-	else if (redir_token->type == HEREDOC)
-	{
-		free(cur->heredoc_limiter); 
-		cur->is_heredoc = 1;
-		cur->heredoc_limiter = ft_strdup(unquoted);
-	}
-	if (unquoted != filename)
-		free(unquoted);
 }

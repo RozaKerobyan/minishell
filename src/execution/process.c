@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/11 11:00:32 by sharteny          #+#    #+#             */
+/*   Updated: 2025/12/11 11:00:34 by sharteny         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	process_status(int status)
@@ -18,34 +30,31 @@ int	setup_child_redir(t_mini *shell, t_cmd *all, t_cmd *curr)
 	return (1);
 }
 
-void    child_cmd(t_mini *shell, t_cmd *curr)
+void	child_cmd(t_mini *shell, t_cmd *curr)
 {
-    char    *cmd_path;
+	char	*cmd_path;
 
-    if (builtins(curr->args[0]))
-        exit(execute_builtins(shell, curr->args));
-    cmd_path = find_cmd_path(curr->args[0], shell->env);
-    if (!cmd_path)
-    {
-        //write(2, "minishell: ", 11);
-        write(2, curr->args[0], ft_strlen(curr->args[0]));
-        write(2, ": command not found\n", 20);
-        exit(127);
-    }
-    if (access(cmd_path, X_OK) != 0)
-    {
-        //write(2, "minishell: ", 11);
-        write(2, curr->args[0], ft_strlen(curr->args[0]));
-        write(2, ": Permission denied\n", 20);
-        free(cmd_path);
-        exit(126);
-    }
-    execve(cmd_path, curr->args, shell->env_arr);
-    perror("minishell");
-    free(cmd_path);
-    exit(127);
+	if (builtins(curr->args[0]))
+		exit(execute_builtins(shell, curr->args));
+	cmd_path = find_cmd_path(curr->args[0], shell->env);
+	if (!cmd_path)
+	{
+		write(2, curr->args[0], ft_strlen(curr->args[0]));
+		write(2, ": command not found\n", 20);
+		exit(127);
+	}
+	if (access(cmd_path, X_OK) != 0)
+	{
+		write(2, curr->args[0], ft_strlen(curr->args[0]));
+		write(2, ": Permission denied\n", 20);
+		free(cmd_path);
+		exit(126);
+	}
+	execve(cmd_path, curr->args, shell->env_arr);
+	perror("minishell");
+	free(cmd_path);
+	exit(127);
 }
-
 
 void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 {
@@ -57,11 +66,11 @@ void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 	exit(0);
 }
 
-int execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
+int	execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
 {
-	char *cmd_path;
-	pid_t pid;
-	int status;
+	char	*cmd_path;
+	pid_t	pid;
+	int		status;
 
 	cmd_path = find_cmd_path(curr->args[0], shell->env);
 	if (!cmd_path)
@@ -69,10 +78,7 @@ int execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
 	setup_signals_parent_exec();
 	pid = fork();
 	if (pid == -1)
-	{
-		setup_signals(); 
-		return (fork_error(cmd_path));
-	}
+		return (setup_signals(), fork_error(cmd_path));
 	if (pid == 0)
 	{
 		setup_signals_child();
@@ -81,9 +87,7 @@ int execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
 	curr->pid = pid;
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status))
-	{
 		write(1, "\n", 1);
-	}
 	setup_signals();
 	free(cmd_path);
 	return (process_status(status));

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/11 11:00:51 by sharteny          #+#    #+#             */
+/*   Updated: 2025/12/15 02:25:57 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	g_status = 0;
@@ -11,9 +23,9 @@ void	init_minishell(t_mini *shell, char **env)
 	shell->status = 0;
 	shell->cmd = NULL;
 	shell->pid = -1;
-	shell->history = NULL;        
-	shell->history_count = 0;   
-	shell->history_capacity = 0; 
+	shell->history = NULL;
+	shell->history_count = 0;
+	shell->history_capacity = 0;
 	init_shlvl(shell);
 	setup_signals();
 }
@@ -25,16 +37,13 @@ int	main_loop(t_mini *shell)
 	while (1)
 	{
 		line = readline("minishell$ ");
-        	if (!line)
-        	{
-            		printf("exit\n");
-            		break;
-        	}
-
-		if (line[0])
+		if (!line)
 		{
-			process_input(shell, line);
+			printf("exit\n");
+			break ;
 		}
+		if (line[0])
+			process_input(shell, line);
 		free(line);
 	}
 	return (0);
@@ -42,7 +51,7 @@ int	main_loop(t_mini *shell)
 
 int	main(int argc, char **argv, char **env)
 {
-	t_mini *shell;
+	t_mini	*shell;
 
 	if (argc != 1)
 	{
@@ -50,7 +59,6 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	}
 	(void)argv;
-
 	shell = malloc(sizeof(t_mini));
 	if (!shell)
 	{

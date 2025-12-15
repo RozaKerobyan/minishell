@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_sort.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:24:21 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:24:22 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	sort_env_arr(char **env, int count)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	*tmp;
 
 	i = 0;
@@ -26,8 +38,8 @@ void	sort_env_arr(char **env, int count)
 
 char	**sorted_copy(char **env)
 {
-	int	count;
-	int	i;
+	int		count;
+	int		i;
 	char	**sorted_env;
 
 	count = 0;
@@ -51,7 +63,7 @@ void	print_env_var(char *var)
 {
 	char	*equal;
 	char	*start;
-	
+
 	equal = ft_strchr(var, '=');
 	if (equal)
 	{
@@ -70,6 +82,7 @@ void	print_env_var(char *var)
 		printf("declare -x %s\n", var);
 	}
 }
+
 void	print_sorted_env(char **sorted_env)
 {
 	int	i;

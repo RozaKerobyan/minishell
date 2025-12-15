@@ -1,17 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:24:26 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:24:28 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char    *check_env_value(t_mini *shell, char *key)
+char	*check_env_value(t_mini *shell, char *key)
 {
-        t_env *tmp;
+	t_env	*tmp;
 
-        tmp = shell->env;
-        while (tmp)
-        {
-                if (!ft_strcmp(tmp->key, key))
-                        return (tmp->value);
-                tmp = tmp->next;
-        }
-        return (NULL);
+	tmp = shell->env;
+	while (tmp)
+	{
+		if (!ft_strcmp(tmp->key, key))
+			return (tmp->value);
+		tmp = tmp->next;
+	}
+	return (NULL);
 }
 
 int	reset_status(t_env *env, int status)
@@ -50,7 +62,7 @@ t_env	*env_child(t_mini *shell, char *key)
 	return (NULL);
 }
 
-void    env_change(t_env *env, char *key, char *s, int n)
+void	env_change(t_env *env, char *key, char *s, int n)
 {
 	t_env	*tmp;
 

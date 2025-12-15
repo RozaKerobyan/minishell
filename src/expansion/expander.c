@@ -65,3 +65,19 @@ void	execute_expander(t_cmd *cmd, char **env, int code, t_mini *shell)
 		return ;
 	expander(cmd, env, code);
 }
+
+int	free_old_args(char **args)
+{
+	int	i;
+
+	if (!args)
+		return (0);
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	return (0);
+}

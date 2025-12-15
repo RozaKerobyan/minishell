@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections_utils.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/11 13:28:55 by sharteny          #+#    #+#             */
+/*   Updated: 2025/12/15 02:03:13 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_type	redir_type(char *s)
@@ -34,6 +46,32 @@ int	handle_heredoc_infile(t_mini *shell, t_cmd *cmd)
 	return (0);
 }
 
+int	prepare_output_files(t_cmd *cmd)
+{
+	t_cmd	*c;
+	int		fd;
+
+	c = cmd;
+	while (c)
+	{
+		if (c->outfile)
+		{
+			if (c->append)
+				fd = open(c->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else
+				fd = open(c->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd < 0)
+			{
+				perror(c->outfile);
+				return (0);
+			}
+			close(fd);
+		}
+		c = c->next;
+	}
+	return (1);
+}
+
 int	setup_redir(t_mini *shell, t_cmd *cmd)
 {
 	if (!shell || !cmd)
@@ -48,19 +86,13 @@ int	setup_redir(t_mini *shell, t_cmd *cmd)
 		}
 	}
 	if (cmd->infile)
-	{
 		if (open_input(shell, cmd->infile) == -1)
 			return (-1);
-	}
 	if (cmd->outfile && !cmd->append)
-	{
 		if (open_output(shell, cmd->outfile) == -1)
 			return (-1);
-	}
 	if (cmd->outfile && cmd->append)
-	{
 		if (open_append(shell, cmd->outfile) == -1)
 			return (-1);
-	}
 	return (0);
 }

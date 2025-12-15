@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/15 02:22:39 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/15 02:22:40 by rkerobya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*home_path(t_mini *shell)
@@ -67,13 +79,13 @@ int	cd_change(t_mini *shell, char **args)
 
 	if (args[1] && args[2])
 		return (msg_error(shell->env,
-			"cd: too many arguments", "", 1));
+				"cd: too many arguments", "", 1));
 	if (check_home(shell, args))
 		return (1);
 	home = home_path(shell);
 	if (!home)
 		return (msg_error(shell->env,
-			"cd: cannot resolve HOME", NULL, 1));
+				"cd: cannot resolve HOME", NULL, 1));
 	if (!args[1])
 		go = ft_strdup(home);
 	else if (!ft_strcmp(args[1], "-"))
@@ -82,7 +94,7 @@ int	cd_change(t_mini *shell, char **args)
 		go = ft_strdup(args[1]);
 	if (!go)
 		return (free(home), msg_error(shell->env,
-			"cd: alloc error", NULL, 1));
+				"cd: alloc error", NULL, 1));
 	if (chdir(go) == -1)
 		return (chdir_error(shell, home, go));
 	free_two(home, go);

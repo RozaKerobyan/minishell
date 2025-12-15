@@ -1,65 +1,86 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_input.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/11 11:00:51 by sharteny          #+#    #+#             */
+/*   Updated: 2025/12/11 11:00:52 by sharteny         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+static int	count_nonempty(char **args)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	k = 0;
+	while (args && args[i])
+	{
+		if (args[i][0] != '\0')
+			k++;
+		i++;
+	}
+	return (k);
+}
+
+static char	**compact_args(char **args, int keep)
+{
+	char	**new;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	new = malloc(sizeof(char *) * (keep + 1));
+	if (!new)
+		return (NULL);
+	while (args[i])
+	{
+		if (args[i][0] != '\0')
+			new[j++] = args[i];
+		else
+			free(args[i]);
+		i++;
+	}
+	new[j] = NULL;
+	free(args);
+	return (new);
+}
 
 void	del_empty_args_cmd(t_cmd *cmd)
 {
-	t_cmd	*curr;
-	int		i;
-	int		j;
 	int		keep;
-	char	**new;
+	t_cmd	*c;
 
-	curr = cmd;
-	while (curr)
+	c = cmd;
+	while (c)
 	{
-		if (curr->args)
+		if (c->args)
 		{
-			i = 0;
-			keep = 0;
-			while (curr->args[i])
-			{
-				if (curr->args[i][0] != '\0')
-					keep++;
-				i++;
-			}
+			keep = count_nonempty(c->args);
 			if (keep == 0)
 			{
-				free_old_args(curr->args);
-				curr->args = NULL;
+				free_old_args(c->args);
+				c->args = NULL;
 			}
-			else if (keep < i)
+			else if (keep < args_len(c->args))
 			{
-				new = malloc(sizeof(char *) * (keep + 1));
-				if (!new)
-					continue;
-				j = 0;
-				i = 0;
-				while (curr->args[i])
-				{
-					if (curr->args[i][0] != '\0')
-						new[j++] = curr->args[i];
-					else
-						free(curr->args[i]);
-					i++;
-				}
-				new[j] = NULL;
-				free(curr->args);
-				curr->args = new;
+				c->args = compact_args(c->args, keep);
 			}
 		}
-		curr = curr->next;
+		c = c->next;
 	}
 }
 
-void	process_input(t_mini *shell, char *input)
+static void	process_tokens(t_mini *shell, t_token *tokens)
 {
-	t_token	*tokens;
 	t_cmd	*cmd;
 
-	if (!input || input[0] == '\0')
-		return ;
-	add_history(input);
-	add_shell_history(shell, input);
-	tokens = tokenize_line(input);
 	if (!tokens)
 	{
 		reset_status(shell->env, 2);
@@ -83,4 +104,16 @@ void	process_input(t_mini *shell, char *input)
 		shell->status = execute_cmd(shell, cmd, cmd);
 	free_cmds(cmd);
 	shell->cmd = NULL;
+}
+
+void	process_input(t_mini *shell, char *input)
+{
+	t_token	*tokens;
+
+	if (!input || input[0] == '\0')
+		return ;
+	add_history(input);
+	add_shell_history(shell, input);
+	tokens = tokenize_line(input);
+	process_tokens(shell, tokens);
 }

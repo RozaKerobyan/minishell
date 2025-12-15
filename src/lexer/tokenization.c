@@ -56,38 +56,42 @@ t_token	*tokenize_line(char *line)
 	while (line[i])
 	{
 		status = set_status(status, line, i);
-		if (status == DEFAULT)
+		if (status == DEFAULT && handle_separator(line, &i, start, &tokens))
 		{
-			int type = is_separator(line, i);
-			if (type)
-			{
-				if (i != start)
-					save_word(&tokens, line, start, i);
-				if (type != SPACES)
-					save_separator(&tokens, line, i, type);
-				if (type == APPEND || type == HEREDOC)
-					i += 2;
-				else
-					i += 1;
-				start = i;
-				continue;
-			}
+			start = i;
+			continue ;
 		}
 		i++;
 	}
 	if (i != start)
 		save_word(&tokens, line, start, i);
 	if (status != DEFAULT)
-	{
-		free_tokens(tokens);
-		ft_putstr_fd("unexpected EOF while looking for matching '\"'\n", STDERR_FILENO);
-		set_exit_status(2);
-		return (NULL);
-	}
-	t_token *tmp = tokens;
-	while (tmp)
-	{
-		tmp = tmp->next;
-	}
+		return (unexpected_eof(tokens));
 	return (tokens);
+}
+
+t_token	*unexpected_eof(t_token *tokens)
+{
+	free_tokens(tokens);
+	ft_putstr_fd("unexpected EOF while looking for matching '\"'\n", 2);
+	set_exit_status(2);
+	return (NULL);
+}
+
+int	handle_separator(char *line, int *i, int start, t_token **tokens)
+{
+	int	type;
+
+	type = is_separator(line, *i);
+	if (!type)
+		return (0);
+	if (*i != start)
+		save_word(tokens, line, start, *i);
+	if (type != SPACES)
+		save_separator(tokens, line, *i, type);
+	if (type == APPEND || type == HEREDOC)
+		*i += 2;
+	else
+		*i += 1;
+	return (1);
 }

@@ -50,13 +50,9 @@ int	check_syntax(t_token *t)
 		if (is_redir(t->type))
 		{
 			if (!t->next)
-			{
 				return (syntax_error(NULL, "newline"));
-			}
 			if (t->next->type != ARG)
-			{
 				return (syntax_error(NULL, t->next->value));
-			}
 		}
 		if (is_redir(t->type) && t->next && is_redir(t->next->type))
 			return (syntax_error(NULL, t->next->value));
@@ -65,4 +61,51 @@ int	check_syntax(t_token *t)
 		t = t->next;
 	}
 	return (0);
+}
+
+void	norm(t_cmd *cur, t_token *redir_token, char *unquoted)
+{
+	if (redir_token->type == INPUT)
+	{
+		free(cur->infile);
+		cur->infile = ft_strdup(unquoted);
+	}
+	else if (redir_token->type == TRUNC)
+	{
+		free(cur->outfile);
+		cur->append = 0;
+		cur->outfile = ft_strdup(unquoted);
+	}
+	else if (redir_token->type == APPEND)
+	{
+		free(cur->outfile);
+		cur->append = 1;
+		cur->outfile = ft_strdup(unquoted);
+	}
+	else if (redir_token->type == HEREDOC)
+	{
+		free(cur->heredoc_limiter);
+		cur->is_heredoc = 1;
+		cur->heredoc_limiter = ft_strdup(unquoted);
+	}
+}
+
+void	handle_redir(t_cmd *cur, t_token **tok)
+{
+	t_token	*redir_token;
+	char	*filename;
+	char	*unquoted;
+
+	if (!(*tok) || !(*tok)->next)
+		return ;
+	redir_token = *tok;
+	filename = (*tok)->next->value;
+	unquoted = remove_quotes_str(filename);
+	if (!unquoted)
+		unquoted = filename;
+	*tok = (*tok)->next;
+	if (is_redir(redir_token->type))
+		norm(cur, redir_token, unquoted);
+	if (unquoted != filename)
+		free(unquoted);
 }

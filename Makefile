@@ -33,6 +33,7 @@ SRC = \
 	expansion/expand.c \
 	expansion/expander.c \
 	expansion/utils.c \
+	expansion/utils2.c \
 	heredoc/heredoc.c \
 	heredoc/heredoc_utils.c \
 	lexer/tokenization.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/04 11:09:29 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/04 11:09:31 by sharteny         ###   ########.fr       */
+/*   Created: 2025/12/11 11:00:51 by sharteny          #+#    #+#             */
+/*   Updated: 2025/12/15 02:25:19 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	wait_pipeline(t_cmd *cmd)
 			else if (WIFSIGNALED(status))
 			{
 				last = 128 + WTERMSIG(status);
-				/* print newline if child was terminated by a signal (Ctrl+C/Ctrl+\) */
 				write(1, "\n", 1);
 			}
 		}
@@ -49,34 +48,11 @@ int	wait_pipeline(t_cmd *cmd)
 	return (last);
 }
 
-int	execute_pipeline(t_mini *shell, t_cmd *cmd)
+int	fork_pipeline(t_mini *shell, t_cmd *cmd)
 {
-	t_cmd *c;
-	pid_t pid;
-	int   ret;
-	if (!cmd)
-		return (1);
-	c = cmd;
-	while (c)
-	{
-		if (c->outfile)
-		{
-			int fd;
-			if (c->append)
-				fd = open(c->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			else
-				fd = open(c->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd < 0)
-			{
-				perror(c->outfile);
-				return (1);
-			}
-			close(fd);
-		}
-		c = c->next;
-	}
-	if (!create_pipes(cmd))
-		return (1);
+	t_cmd	*c;
+	pid_t	pid;
+
 	c = cmd;
 	while (c)
 	{
@@ -98,6 +74,50 @@ int	execute_pipeline(t_mini *shell, t_cmd *cmd)
 		close_prev_pipe(c);
 		c = c->next;
 	}
+	return (0);
+}
+
+int	create_child_processes(t_mini *shell, t_cmd *cmd)
+{
+	t_cmd	*c;
+	pid_t	pid;
+
+	c = cmd;
+	while (c)
+	{
+		setup_signals_parent_exec();
+		pid = fork();
+		if (pid == -1)
+		{
+			setup_signals();
+			perror("fork");
+			free_pipe_fd(cmd);
+			return (0);
+		}
+		if (pid == 0)
+		{
+			setup_signals_child();
+			child_process(shell, cmd, c);
+		}
+		c->pid = pid;
+		close_prev_pipe(c);
+		c = c->next;
+	}
+	return (1);
+}
+
+int	execute_pipeline(t_mini *shell, t_cmd *cmd)
+{
+	int	ret;
+
+	if (!cmd)
+		return (1);
+	if (!prepare_output_files(cmd))
+		return (1);
+	if (!create_pipes(cmd))
+		return (1);
+	if (!create_child_processes(shell, cmd))
+		return (1);
 	free_pipe_fd(cmd);
 	ret = wait_pipeline(cmd);
 	setup_signals();
