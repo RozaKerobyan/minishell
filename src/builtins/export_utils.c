@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:23:40 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:23:42 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:38:46 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	validation(char	*str)
 		}
 		if (str[i] == '=')
 			return (1);
+		if (str[i] == '+' && str[i + 1] == '=')
+			return (3);
 		if (str[i] == '\0')
 			return (2);
 	}
@@ -35,48 +37,12 @@ int	validation(char	*str)
 
 char	**add_variable(char **env, char *var)
 {
-	int		len;
-	int		i;
-	char	**env_mem;
+	int	index;
 
-	len = 0;
-	while (env[len])
-		len++;
-	env_mem = malloc(sizeof(char *) * (len + 2));
-	if (!env_mem)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		env_mem[i] = ft_strdup(env[i]);
-		i++;
-	}
-	env_mem[len] = ft_strdup(var);
-	env_mem[len + 1] = NULL;
-	tab_free(env);
-	return (env_mem);
-}
-
-int	find_var_index(char **env, char *var)
-{
-	int		i;
-	char	*sign;
-
-	i = 0;
-	sign = ft_strjoin(var, "=");
-	if (!sign)
-		return (-1);
-	while (env[i])
-	{
-		if (ft_strncmp(sign, env[i], ft_strlen(sign)) == 0)
-		{
-			free(sign);
-			return (i);
-		}
-		i++;
-	}
-	free(sign);
-	return (-1);
+	index = find_var_index(env, var);
+	if (index != -1)
+		return (replace_variable(env, var, index));
+	return (append_variable(env, var));
 }
 
 char	**remove_var(char **env, char *var)
@@ -118,4 +84,24 @@ int	equal_sign(char	*str, int *found)
 		i++;
 	}
 	return (*found);
+}
+
+void	handle_one_export(char *arg, char ***env)
+{
+	int	valid;
+	int	index;
+
+	if (!export_validation(arg))
+		return ;
+	valid = validation(arg);
+	if (valid == 1)
+		*env = add_variable(*env, arg);
+	else if (valid == 3)
+		handle_append_variable(env, arg);
+	else if (valid == 2)
+	{
+		index = find_var_index(*env, arg);
+		if (index == -1)
+			*env = add_variable(*env, arg);
+	}
 }

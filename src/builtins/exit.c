@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:23:08 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:23:11 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/19 23:05:16 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	exit_shell(t_mini *shell, int exit_mode)
 
 void	print_exit_num_error(char *arg)
 {
-	ft_putstr_fd("exit: ", 2);
+	ft_putstr_fd("minishell: exit: ", 2);
 	ft_putstr_fd(arg, 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
 }
@@ -59,7 +59,7 @@ int	handle_exit_args(char **args, int *exit_code)
 	}
 	if (args[2])
 	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		return (1);
 	}
 	return (0);

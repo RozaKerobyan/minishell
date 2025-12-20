@@ -22,6 +22,8 @@ SRC = \
 	environment/env_utils.c \
 	environment/env_utils2.c \
 	environment/env_utils3.c \
+	environment/env_utils4.c \
+	environment/env_utils5.c \
 	environment/shlvl.c \
 	environment/env_sort.c \
 	execution/builtins.c \
@@ -30,6 +32,7 @@ SRC = \
 	execution/process_input.c \
 	execution/pipe.c \
 	execution/pipeline.c \
+	execution/child_cmd.c \
 	expansion/expand.c \
 	expansion/expander.c \
 	expansion/utils.c \

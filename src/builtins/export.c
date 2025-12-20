@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:23:56 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:23:58 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:25:32 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,7 @@ void	handle_export_args(char **args, char ***env)
 	i = 1;
 	while (args[i])
 	{
-		if (!validation(args[i]))
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("`: not a valid identifier\n", 2);
-			set_exit_status(1);
-			i++;
-			continue ;
-		}
-		if (ft_strchr(args[i], '='))
-			*env = add_variable(*env, args[i]);
-		else
-			*env = add_variable(*env, ft_strjoin(args[i], "="));
+		handle_one_export(args[i], env);
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 10:37:58 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/15 02:21:54 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:13:12 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <limits.h>
+# include <sys/stat.h>
 
 # define SIGINT_FLAG_BIT    0x0100
 # define HEREDOC_EXIT_BIT   0x0200    
@@ -119,17 +120,18 @@ int		history_builtin(t_mini *shell, char **args);
 // cd_utils.c
 char	*home_path(t_mini *shell);
 int		check_home(t_mini *shell, char **args);
-int		chdir_error(t_mini *shell, char *home, char *go);
+int		chdir_error(char *path);
 char	*cd_display(char *str);
 int		cd_change(t_mini *shell, char **args);
+char	*cd_target(t_mini *shell, char **args);
 
 // export_utils.c
 int		validation(char *str);
 char	**add_variable(char **env, char *var);
-int		find_var_index(char **env, char *var);
 char	**remove_var(char **env, char *var);
 int		equal_sign(char *str, int *found);
 char	**export_remove(char **env, char **args, int i, int found);
+void	handle_one_export(char *arg, char ***env);
 
 // exit_utils.c
 int		status_exit(char *arg, int *err_status);
@@ -148,6 +150,7 @@ void	process_input(t_mini *shell, char *input);
 void	check_builtins(t_mini *shell, char **args, int *status);
 void	restore_std_fd(int stdin_bak, int stdout_bak);
 char	*norm_find_cmp(char *cmd, char **paths);
+void	child_cmd(t_mini *shell, t_cmd *curr);
 
 // environments
 char	*check_env_value(t_mini *shell, char *key);
@@ -169,6 +172,11 @@ char	**sorted_copy(char **env);
 void	print_env_var(char *var);
 void	print_sorted_env(char **sorted_env);
 int		find_del_var(char **env, char **args, int i, int found);
+void	update_env_both(t_mini *shell, char *key, char *value, int flag);
+void	handle_append_variable(char ***env, char *arg);
+int		find_var_index(char **env, char *var);
+char	**replace_variable(char **env, char *var, int index);
+char	**append_variable(char **env, char *var);
 
 // utils
 void	tab_free(char **tab);
@@ -190,6 +198,9 @@ void	cleanup_minishell(t_mini *shell);
 void	free_cmds(t_cmd *cmd);
 int		ft_isspace(int c);
 int		args_len(char **args);
+int		check_directory(char *path);
+void	minishell_error(char *cmd, char *msg);
+int		export_validation(char *arg);
 
 // lexer and parser
 t_token	*token_new(char *value, t_type type);
@@ -234,6 +245,7 @@ int		one_redir(t_mini *shell, t_type type, char *filename);
 int		redirections(t_mini *shell);
 int		setup_redir(t_mini *shell, t_cmd *cmd);
 int		prepare_output_files(t_cmd *cmd);
+int		setup_child_redir(t_mini *shell, t_cmd *all, t_cmd *curr);
 
 // heredoc.c
 int		heredoc_line(int fd, char *limit, size_t len);

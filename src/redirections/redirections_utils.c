@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 13:28:55 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/15 02:03:13 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:12:10 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,13 @@ int	setup_redir(t_mini *shell, t_cmd *cmd)
 		if (open_append(shell, cmd->outfile) == -1)
 			return (-1);
 	return (0);
+}
+
+int	setup_child_redir(t_mini *shell, t_cmd *all, t_cmd *curr)
+{
+	if (!set_pipe_fds(all, curr))
+		return (0);
+	if (redirections(shell) == -1)
+		return (0);
+	return (1);
 }

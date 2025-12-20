@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 11:00:51 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/15 02:25:57 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:52:54 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	main_loop(t_mini *shell)
 
 	while (1)
 	{
-		line = readline("minishell$ ");
+		line = readline("\001\033[1;92m\002minishell$ \001\033[0m\002");
 		if (!line)
 		{
 			printf("exit\n");

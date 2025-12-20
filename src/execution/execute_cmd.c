@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 10:50:28 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/15 02:11:27 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:17:02 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	execute_cmd(t_mini *shell, t_cmd *all, t_cmd *curr)
 	return (status);
 }
 
-char	*norm_find_cmp(char *cmd, char **paths)
+char	*find_full_path(char *cmd, char **paths)
 {
 	char	*full_path;
 	int		i;
@@ -57,6 +57,15 @@ char	*norm_find_cmp(char *cmd, char **paths)
 	return (NULL);
 }
 
+int	file_exist(char *path)
+{
+	if (!path)
+		return (0);
+	if (access(path, F_OK) == 0)
+		return (1);
+	return (0);
+}
+
 char	*find_cmd_path(char *cmd, t_env *env)
 {
 	char	*path;
@@ -65,9 +74,9 @@ char	*find_cmd_path(char *cmd, t_env *env)
 
 	if (!cmd || cmd[0] == '\0')
 		return (NULL);
-	if (ft_strchr(cmd, '/') != NULL)
+	if (ft_strchr(cmd, '/'))
 	{
-		if (file_exist(cmd))
+		if (access(cmd, F_OK) == 0)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
@@ -77,7 +86,7 @@ char	*find_cmd_path(char *cmd, t_env *env)
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
-	full_path = norm_find_cmp(cmd, paths);
+	full_path = find_full_path(cmd, paths);
 	free_str(paths);
 	return (full_path);
 }

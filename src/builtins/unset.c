@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:24:13 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:24:14 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 02:19:22 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,18 @@ int	validation_unset(char *str)
 {
 	int	i;
 
-	if (!str)
+	if (!str || str[0] == '\0')
 		return (0);
-	if (str[0] && (ft_isalpha(str[0]) || str[0] == '_'))
+	if (ft_isdigit(str[0]))
+		return (0);
+	i = 0;
+	while (str[i])
 	{
-		i = 1;
-		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
-		{
-			i++;
-		}
-		if (str[i] == '\0')
-			return (1);
+		if (!(ft_isalnum(str[i]) || str[i] == '_'))
+			return (0);
+		i++;
 	}
-	return (0);
+	return (1);
 }
 
 t_env	*remove_env_var(t_env *env, char *var)
@@ -69,17 +68,11 @@ void	unset_builtin(t_mini *shell, char **args)
 	i = 1;
 	while (args[i])
 	{
-		if (!validation_unset(args[i]))
+		if (validation_unset(args[i]))
 		{
-			ft_putstr_fd("unset: ", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd(": invalid parameter name\n", 2);
-			set_exit_status(1);
-			i++;
-			continue ;
+			shell->env = remove_env_var(shell->env, args[i]);
+			shell->env_arr = remove_var(shell->env_arr, args[i]);
 		}
-		shell->env = remove_env_var(shell->env, args[i]);
-		shell->env_arr = remove_var(shell->env_arr, args[i]);
 		i++;
 	}
 }

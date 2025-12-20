@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 18:32:37 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/11 18:32:39 by sharteny         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:52:21 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,11 @@
 char	*process_arg(char *arg, char **env, int code)
 {
 	char	*tmp;
-	char	*quoted;
 
 	tmp = expand_arg(arg, env, code);
 	if (!tmp)
 		return (NULL);
-	quoted = rm_quotes(tmp);
-	free(tmp);
-	return (quoted);
+	return (tmp);
 }
 
 int	handle_quote(char c, char *q, char *s, t_expander *e)

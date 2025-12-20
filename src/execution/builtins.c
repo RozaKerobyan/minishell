@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 10:50:00 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/15 02:10:34 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:16:52 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,13 +98,4 @@ int	execute_builtins(t_mini *shell, char **args)
 	check_builtins(shell, args, &status);
 	restore_std_fd(stdin_backup, stdout_backup);
 	return (status);
-}
-
-int	file_exist(char *path)
-{
-	if (!path)
-		return (0);
-	if (access(path, F_OK) == 0)
-		return (1);
-	return (0);
 }

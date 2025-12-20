@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:22:46 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:22:48 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:20:31 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,16 @@ void	oldpwd_and_pwd(t_env *env, char **pwd, char **oldpwd)
 	}
 }
 
+int	cd_change(t_mini *shell, char **args)
+{
+	char	*target;
+
+	target = cd_target(shell, args);
+	if (!target)
+		return (1);
+	return (chdir_error(target));
+}
+
 int	cd_builtin(t_mini *shell, char **args)
 {
 	char	*pwd;
@@ -79,7 +89,14 @@ int	cd_builtin(t_mini *shell, char **args)
 		pwd = getcwd(NULL, 0);
 		if (!pwd)
 			oldpwd_and_pwd(shell->env, &pwd, &oldpwd);
-		change_cd_env(shell, oldpwd, pwd);
+		if (oldpwd && oldpwd[0] != '\0')
+		{
+			update_env_both(shell, "OLDPWD", oldpwd, 1);
+		}
+		if (pwd && pwd[0] != '\0')
+		{
+			update_env_both(shell, "PWD", pwd, 1);
+		}
 	}
 	free(pwd);
 	free(oldpwd);

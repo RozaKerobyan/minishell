@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:48:06 by sharteny          #+#    #+#             */
-/*   Updated: 2025/11/19 19:48:09 by sharteny         ###   ########.fr       */
+/*   Updated: 2025/12/20 18:51:40 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	syntax_error(const char *msg, const char *token)
 {
 	if (token)
 	{
-		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd("minishell: syntax error near unexpected token `",
+			STDERR_FILENO);
 		ft_putstr_fd((char *)token, STDERR_FILENO);
 		ft_putstr_fd("'\n", STDERR_FILENO);
 	}

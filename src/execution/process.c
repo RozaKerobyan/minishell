@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 11:00:32 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/11 11:00:34 by sharteny         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:14:03 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,41 +21,6 @@ int	process_status(int status)
 	return (status);
 }
 
-int	setup_child_redir(t_mini *shell, t_cmd *all, t_cmd *curr)
-{
-	if (!set_pipe_fds(all, curr))
-		return (0);
-	if (redirections(shell) == -1)
-		return (0);
-	return (1);
-}
-
-void	child_cmd(t_mini *shell, t_cmd *curr)
-{
-	char	*cmd_path;
-
-	if (builtins(curr->args[0]))
-		exit(execute_builtins(shell, curr->args));
-	cmd_path = find_cmd_path(curr->args[0], shell->env);
-	if (!cmd_path)
-	{
-		write(2, curr->args[0], ft_strlen(curr->args[0]));
-		write(2, ": command not found\n", 20);
-		exit(127);
-	}
-	if (access(cmd_path, X_OK) != 0)
-	{
-		write(2, curr->args[0], ft_strlen(curr->args[0]));
-		write(2, ": Permission denied\n", 20);
-		free(cmd_path);
-		exit(126);
-	}
-	execve(cmd_path, curr->args, shell->env_arr);
-	perror("minishell");
-	free(cmd_path);
-	exit(127);
-}
-
 void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 {
 	if (!setup_child_redir(shell, all, curr))
@@ -66,19 +31,33 @@ void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 	exit(0);
 }
 
-int	execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
+int	setup_and_valid(t_mini *shell, t_cmd *curr, char **cmd_path)
 {
-	char	*cmd_path;
+	*cmd_path = find_cmd_path(curr->args[0], shell->env);
+	if (!*cmd_path)
+		return (cmd_error(curr->args[0]));
+	if (check_directory(*cmd_path))
+	{
+		minishell_error(curr->args[0], "Is a directory");
+		free(*cmd_path);
+		return (126);
+	}
+	return (0);
+}
+
+int	fork_and_execute(t_mini *shell, t_cmd *all, t_cmd *curr, char *cmd_path)
+{
 	pid_t	pid;
 	int		status;
 
-	cmd_path = find_cmd_path(curr->args[0], shell->env);
-	if (!cmd_path)
-		return (cmd_error(curr->args[0]));
 	setup_signals_parent_exec();
 	pid = fork();
 	if (pid == -1)
-		return (setup_signals(), fork_error(cmd_path));
+	{
+		setup_signals();
+		free(cmd_path);
+		return (fork_error(NULL));
+	}
 	if (pid == 0)
 	{
 		setup_signals_child();
@@ -89,6 +68,19 @@ int	execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
 	if (WIFSIGNALED(status))
 		write(1, "\n", 1);
 	setup_signals();
-	free(cmd_path);
 	return (process_status(status));
+}
+
+int	execute_external(t_mini *shell, t_cmd *all, t_cmd *curr)
+{
+	char	*cmd_path;
+	int		validation_result;
+	int		execution_result;
+
+	validation_result = setup_and_valid(shell, curr, &cmd_path);
+	if (validation_result != 0)
+		return (validation_result);
+	execution_result = fork_and_execute(shell, all, curr, cmd_path);
+	free(cmd_path);
+	return (execution_result);
 }

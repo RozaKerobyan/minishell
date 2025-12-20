@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/15 02:22:39 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:22:40 by rkerobya         ###   ########.fr       */
+/*   Created: 2025/12/19 19:23:03 by rkerobya          #+#    #+#             */
+/*   Updated: 2025/12/20 18:19:12 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,22 @@ int	check_home(t_mini *shell, char **args)
 	return (0);
 }
 
-int	chdir_error(t_mini *shell, char *home, char *go)
+int	chdir_error(char *path)
 {
-	char	*error;
-
-	error = strerror(errno);
-	free_two(home, go);
-	return (msg_error(shell->env, "cd: ", error, 1));
+	if (!path)
+		return (1);
+	if (chdir(path) == -1)
+	{
+		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd("\n", STDERR_FILENO);
+		free(path);
+		return (1);
+	}
+	free(path);
+	return (0);
 }
 
 char	*cd_display(char *str)
@@ -66,37 +75,36 @@ char	*cd_display(char *str)
 		return (NULL);
 	if (dst[0] != '\0')
 	{
-		ft_putstr_fd(dst, 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(dst, 1);
+		ft_putstr_fd("\n", 1);
 	}
 	return (dst);
 }
 
-int	cd_change(t_mini *shell, char **args)
+char	*cd_target(t_mini *shell, char **args)
 {
 	char	*home;
-	char	*go;
 
 	if (args[1] && args[2])
-		return (msg_error(shell->env,
-				"cd: too many arguments", "", 1));
+	{
+		msg_error(shell->env, "cd: too many arguments", "", 1);
+		return (NULL);
+	}
 	if (check_home(shell, args))
-		return (1);
+		return (NULL);
 	home = home_path(shell);
 	if (!home)
-		return (msg_error(shell->env,
-				"cd: cannot resolve HOME", NULL, 1));
+	{
+		msg_error(shell->env, "cd: cannot resolve HOME", NULL, 1);
+		return (NULL);
+	}
 	if (!args[1])
-		go = ft_strdup(home);
-	else if (!ft_strcmp(args[1], "-"))
-		go = cd_display(check_env_value(shell, "OLDPWD"));
-	else
-		go = ft_strdup(args[1]);
-	if (!go)
-		return (free(home), msg_error(shell->env,
-				"cd: alloc error", NULL, 1));
-	if (chdir(go) == -1)
-		return (chdir_error(shell, home, go));
-	free_two(home, go);
-	return (0);
+		return (home);
+	if (!ft_strcmp(args[1], "-"))
+	{
+		free(home);
+		return (cd_display(check_env_value(shell, "OLDPWD")));
+	}
+	free(home);
+	return (ft_strdup(args[1]));
 }
