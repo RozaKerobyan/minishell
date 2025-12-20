@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sharteny <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 18:56:32 by sharteny          #+#    #+#             */
-/*   Updated: 2025/11/11 18:56:35 by sharteny         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:32:36 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,35 +69,6 @@ void	add_arg(t_cmd *cmd, const char *value)
 	new_args[n + 1] = NULL;
 	free(cmd->args);
 	cmd->args = new_args;
-}
-
-t_cmd	*parse_tokens(t_token *tok)
-{
-	t_cmd	*head;
-	t_cmd	*cur;
-
-	head = new_cmd();
-	cur = head;
-	if (!tok)
-		return (NULL);
-	if (check_syntax(tok))
-		return (NULL);
-	while (tok)
-	{
-		if (tok->type == ARG)
-			add_arg(cur, tok->value);
-		else if (is_redir(tok->type))
-			handle_redir(cur, &tok);
-		else if (tok->type == PIPE)
-		{
-			cur->next = new_cmd();
-			if (cur->next)
-				cur->next->prev = cur;
-			cur = cur->next;
-		}
-		tok = tok->next;
-	}
-	return (head);
 }
 
 char	*remove_quotes_str(const char *str)

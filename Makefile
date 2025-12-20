@@ -43,6 +43,7 @@ SRC = \
 	lexer/tokenization_utils.c \
 	main/minishell.c \
 	parser/parsing.c \
+	parser/pars_tokens.c \
 	parser/pars_utils.c \
 	redirections/redirections.c \
 	redirections/redirections_utils.c \
@@ -90,6 +91,7 @@ valgrind:
          --show-leak-kinds=all \
          --track-fds=yes \
          --suppressions=readline.supp \
+	 --show-reachable=yes \
          ./minishell	
 
 .PHONY: all clean fclean re

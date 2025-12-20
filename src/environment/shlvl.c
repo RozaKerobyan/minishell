@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:24:40 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/20 18:49:38 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:11:54 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	update_shlvl(t_mini *shell)
 	char	*lvl_str;
 	char	*new_lvl;
 	int		cur_lvl;
+	char	*shlvl_var;
 
 	lvl_str = check_env_value(shell, "SHLVL");
 	if (!lvl_str)
@@ -48,8 +49,9 @@ void	update_shlvl(t_mini *shell)
 	new_lvl = ft_itoa(cur_lvl);
 	env_change(shell->env, "SHLVL", new_lvl, 1);
 	shell->env_arr = remove_var(shell->env_arr, "SHLVL");
-	shell->env_arr = add_variable(shell->env_arr,
-			ft_strjoin("SHLVL=", new_lvl));
+	shlvl_var = ft_strjoin("SHLVL=", new_lvl);
+	shell->env_arr = add_variable(shell->env_arr, shlvl_var);
+	free(shlvl_var);
 	free(new_lvl);
 }
 
