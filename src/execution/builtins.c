@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 10:50:00 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/20 19:16:52 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/22 12:12:37 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	check_builtins(t_mini *shell, char **args, int *status)
 	else if (ft_strcmp(args[0], "export") == 0)
 	{
 		shell->env_arr = export_builtin(shell->env_arr, args);
+		free_env(shell->env);
 		shell->env = env_list_from_array(shell->env_arr);
 		*status = get_exit_status();
 	}
