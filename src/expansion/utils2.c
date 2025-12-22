@@ -22,17 +22,17 @@
 	return (tmp);
 } */
 
-char *process_arg(char *arg, char **env, int code)
+char	*process_arg(char *arg, char **env, int code)
 {
-    char *tmp;
-    char *quoted;
+	char	*tmp;
+	char	*quoted;
 
-    tmp = expand_arg(arg, env, code);
-    if (!tmp)
-        return (NULL);
-    quoted = rm_quotes(tmp);
-    free(tmp);
-    return (quoted);
+	tmp = expand_arg(arg, env, code);
+	if (!tmp)
+		return (NULL);
+	quoted = rm_quotes(tmp);
+	free(tmp);
+	return (quoted);
 }
 
 int	handle_quote(char c, char *q, char *s, t_expander *e)

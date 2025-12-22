@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 02:26:53 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/15 02:26:54 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/22 12:21:06 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,6 @@ void	cleanup_minishell(t_mini *shell)
 		free_cmds(shell->cmd);
 	cleanup_redir(shell);
 	free_shell_history(shell);
+	rl_clear_history();
 	free(shell);
 }

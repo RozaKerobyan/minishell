@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 11:00:32 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/20 22:12:26 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/22 12:32:31 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,14 @@ int	process_status(int status)
 void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 {
 	if (!setup_child_redir(shell, all, curr))
+	{
+		cleanup_minishell(shell);
 		exit(1);
+	}
 	setup_signals_child();
 	if (curr->args && curr->args[0])
 		child_cmd(shell, curr);
+	cleanup_minishell(shell);
 	exit(0);
 }
 

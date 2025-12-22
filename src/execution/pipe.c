@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 10:06:22 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/21 19:40:32 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/22 12:34:49 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,20 +78,20 @@ void	close_pipe_fds(t_cmd *cmd, t_cmd *skip)
 	}
 }
 
-bool set_pipe_fds(t_cmd *all, t_cmd *c)
+bool	set_pipe_fds(t_cmd *all, t_cmd *c)
 {
-    if (!c)
-        return (false);
-    if (c->prev && c->prev->pipe_output && c->prev->pipe_fd)
-    {
-        if (dup2(c->prev->pipe_fd[0], STDIN_FILENO) == -1)
-            return (false);
-    }
-    if (c->pipe_output && c->pipe_fd)
-    {
-        if (dup2(c->pipe_fd[1], STDOUT_FILENO) == -1)
-            return (false);
-    }
-    close_pipe_fds(all, NULL);
-    return (true);
+	if (!c)
+		return (false);
+	if (c->prev && c->prev->pipe_output && c->prev->pipe_fd)
+	{
+		if (dup2(c->prev->pipe_fd[0], STDIN_FILENO) == -1)
+			return (false);
+	}
+	if (c->pipe_output && c->pipe_fd)
+	{
+		if (dup2(c->pipe_fd[1], STDOUT_FILENO) == -1)
+			return (false);
+	}
+	close_pipe_fds(all, NULL);
+	return (true);
 }
