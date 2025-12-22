@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 11:00:32 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/22 12:32:31 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/23 00:44:46 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,38 @@ int	process_status(int status)
 	return (status);
 }
 
+int	setup_child_fds(t_mini *shell, t_cmd *curr)
+{
+	if (curr->heredoc_fd != -1)
+		shell->input = curr->heredoc_fd;
+	if (curr->infile)
+	{
+		if (open_input(shell, curr->infile) == -1)
+			return (-1);
+	}
+	if (curr->outfile)
+	{
+		if (curr->append)
+		{
+			if (open_append(shell, curr->outfile) == -1)
+				return (-1);
+		}
+		else
+		{
+			if (open_output(shell, curr->outfile) == -1)
+				return (-1);
+		}
+	}
+	return (0);
+}
+
 void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 {
+	if (setup_child_fds(shell, curr) == -1)
+	{
+		cleanup_minishell(shell);
+		exit(1);
+	}
 	if (!setup_child_redir(shell, all, curr))
 	{
 		cleanup_minishell(shell);
@@ -33,20 +63,6 @@ void	child_process(t_mini *shell, t_cmd *all, t_cmd *curr)
 		child_cmd(shell, curr);
 	cleanup_minishell(shell);
 	exit(0);
-}
-
-int	setup_and_valid(t_mini *shell, t_cmd *curr, char **cmd_path)
-{
-	*cmd_path = find_cmd_path(curr->args[0], shell->env);
-	if (!*cmd_path)
-		return (cmd_error(curr->args[0]));
-	if (check_directory(*cmd_path))
-	{
-		minishell_error(curr->args[0], "Is a directory");
-		free(*cmd_path);
-		return (126);
-	}
-	return (0);
 }
 
 int	fork_and_execute(t_mini *shell, t_cmd *all, t_cmd *curr, char *cmd_path)

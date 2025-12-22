@@ -27,25 +27,6 @@ t_type	redir_type(char *s)
 	return (0);
 }
 
-int	handle_heredoc_infile(t_mini *shell, t_cmd *cmd)
-{
-	if (cmd->heredoc_limiter)
-	{
-		if (heredoc(shell, cmd->heredoc_limiter) == -1)
-		{
-			if (g_status == 130)
-				return (-2);
-			return (-1);
-		}
-	}
-	if (cmd->infile)
-	{
-		if (open_input(shell, cmd->infile) == -1)
-			return (-1);
-	}
-	return (0);
-}
-
 int	prepare_output_files(t_cmd *cmd)
 {
 	t_cmd	*c;

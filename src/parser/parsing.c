@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 18:56:32 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/20 21:32:36 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/23 00:08:24 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_cmd	*new_cmd(void)
 	cmd->pipe_output = 0;
 	cmd->pid = -1;
 	cmd->heredoc_limiter = NULL;
+	cmd->heredoc_fd = -1;
 	cmd->next = NULL;
 	cmd->prev = NULL;
 	return (cmd);

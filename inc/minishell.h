@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 10:37:58 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/20 22:48:24 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/23 00:40:21 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_cmd
 	int				*pipe_fd;
 	int				pipe_output;
 	pid_t			pid;
+	int				heredoc_fd;
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 }	t_cmd;
@@ -149,8 +150,8 @@ void	del_redir_args(char **args);
 void	process_input(t_mini *shell, char *input);
 void	check_builtins(t_mini *shell, char **args, int *status);
 void	restore_std_fd(int stdin_bak, int stdout_bak);
-char	*norm_find_cmp(char *cmd, char **paths);
 void	child_cmd(t_mini *shell, t_cmd *curr);
+int		setup_and_valid(t_mini *shell, t_cmd *curr, char **cmd_path);
 
 // environments
 char	*check_env_value(t_mini *shell, char *key);
@@ -201,6 +202,7 @@ int		args_len(char **args);
 int		check_directory(char *path);
 void	minishell_error(char *cmd, char *msg);
 int		export_validation(char *arg);
+void	close_prev_pipe(t_cmd *c);
 
 // lexer and parser
 t_token	*token_new(char *value, t_type type);
@@ -263,7 +265,7 @@ void	free_pipe_fd(t_cmd *cmd);
 int		execute_pipeline(t_mini *shell, t_cmd *cmd);
 void	close_prev_pipe(t_cmd *c);
 int		wait_pipeline(t_cmd *cmd);
-int		fork_pipeline(t_mini *shell, t_cmd *cmd);
+int		create_child_processes(t_mini *shell, t_cmd *cmd);
 
 // expander
 void	expand_variable(char *arg, char **env, t_expander *e);

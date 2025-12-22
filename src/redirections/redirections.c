@@ -48,19 +48,6 @@ int	open_append(t_mini *shell, char *filename)
 	return (0);
 }
 
-int	one_redir(t_mini *shell, t_type type, char *filename)
-{
-	if (type == INPUT)
-		return (open_input(shell, filename));
-	if (type == TRUNC)
-		return (open_output(shell, filename));
-	if (type == APPEND)
-		return (open_append(shell, filename));
-	if (type == HEREDOC)
-		return (heredoc(shell, filename));
-	return (0);
-}
-
 int	redirections(t_mini *shell)
 {
 	if (!shell)

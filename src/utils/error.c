@@ -42,7 +42,6 @@ int	msg_error(t_env *env, char *msg, char *str, int status)
 
 void	minishell_error(char *cmd, char *msg)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putstr_fd(msg, STDERR_FILENO);

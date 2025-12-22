@@ -6,7 +6,7 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 18:56:50 by rkerobya          #+#    #+#             */
-/*   Updated: 2025/12/22 12:33:35 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/23 00:29:10 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,20 @@ void	exec_external_cmd(t_mini *shell, t_cmd *curr, char *cmd_path)
 	free(cmd_path);
 	cleanup_minishell(shell);
 	exit(126);
+}
+
+int	setup_and_valid(t_mini *shell, t_cmd *curr, char **cmd_path)
+{
+	*cmd_path = find_cmd_path(curr->args[0], shell->env);
+	if (!*cmd_path)
+		return (cmd_error(curr->args[0]));
+	if (check_directory(*cmd_path))
+	{
+		minishell_error(curr->args[0], "Is a directory");
+		free(*cmd_path);
+		return (126);
+	}
+	return (0);
 }
 
 void	child_cmd(t_mini *shell, t_cmd *curr)
