@@ -6,13 +6,13 @@
 /*   By: rkerobya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 18:32:37 by sharteny          #+#    #+#             */
-/*   Updated: 2025/12/21 19:41:30 by rkerobya         ###   ########.fr       */
+/*   Updated: 2025/12/23 17:10:54 by rkerobya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* char	*process_arg(char *arg, char **env, int code)
+char	*process_arg(char *arg, char **env, int code)
 {
 	char	*tmp;
 
@@ -20,19 +20,6 @@
 	if (!tmp)
 		return (NULL);
 	return (tmp);
-} */
-
-char	*process_arg(char *arg, char **env, int code)
-{
-	char	*tmp;
-	char	*quoted;
-
-	tmp = expand_arg(arg, env, code);
-	if (!tmp)
-		return (NULL);
-	quoted = rm_quotes(tmp);
-	free(tmp);
-	return (quoted);
 }
 
 int	handle_quote(char c, char *q, char *s, t_expander *e)
